@@ -30,6 +30,11 @@ public:
         c.rsp = rsp;
         return c;
     }
+
+    void execute(){
+        //Allows rip to be used outside of fiber class
+        rip();
+    }
     
 // Deconstructor.
     ~Fiber(){
@@ -59,6 +64,9 @@ public:
 
             Context c = currentFiber->getContext();
             setContext(&c);
+
+            //Call the fiber function for execution
+            currentFiber->execute();
 
             delete currentFiber; //Delete fiber when done.
         }
