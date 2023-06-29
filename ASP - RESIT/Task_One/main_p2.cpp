@@ -9,6 +9,11 @@ void foo() {
     exit(0);
 }
 
+void goo() {
+    std::cout << "you called goo" << std::endl;
+    //Shouldn't be returned to main due to using a different stack.
+    exit(0);
+}
 int main() {
     //Set up data stack.
     char data[4096];
