@@ -13,9 +13,9 @@ Within the main function I create and obj of the Fiber class, this uses foo as i
 obj to initialise the fiber stack, then assigns the context of the fiber to the Context obj c and then finally switchs controll to the fiber
 using setContext.
 
-To compile and run this section of the program please use clang++ fiber_main.cpp context.o -o prog
-
 ![fiber creation](t2fiber.png)
+
+To compile and run this section of the program please use clang++ fiber_main.cpp context.o -o prog
 
 ## Part Two - Scheduler
 
@@ -39,7 +39,6 @@ are then added to the sceduler class, then when do_it() is called both of the fi
 Currently when the program runs it executes the first fiber correctly however when running the second fiber it returns a segmentaion fault, this is likely due to 
 the program not switching control correctly.
 
-To compile and run this section of the program please use clang++ scheduler_main.cpp context.o -o prog
 
 ![T2P2 Broken](t2_s.png)
 
@@ -71,3 +70,5 @@ The bellow image shows the code running:
 As can be seen in the above the first fiber still executes without fault however when it comes to executing the second one it fails due to a segmentation fault (core dumped).
 A blog written by GeeksForGeeks [Segmentation Faults in C/C++](https://www.geeksforgeeks.org/segmentation-fault-c-cpp/) shows some of the most common issues for this fault
 and after reading I believe this error is occuring due to the memory address being freed after the first fibers execution.
+
+To compile and run this section of the program please use clang++ scheduler_main.cpp context.o -o prog

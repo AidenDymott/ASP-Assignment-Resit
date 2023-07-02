@@ -1,8 +1,5 @@
 # Task Three
 
-To compile this code and run the program please use clang++ main.cpp context.o -o prog
-and then run it with ./prog
-
 ## Yield Function
 
 For the final task we have to implement a yield function that stops a fiber that is currently running and then allows it to continue from the same point later on in the schedulers run time.

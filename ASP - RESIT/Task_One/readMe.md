@@ -10,6 +10,8 @@ this then causes the if loop to not run the second time as the new value of x is
 
 ![T1 P1 code/running](t1prof.png)
 
+To compile and run this part of the code use clang++ main_p1.cpp context.o -o prog and then run it with ./prog
+
 ## Part Two
 
 The second part of task 1 was to make it so that control could be switched to another function that is acting as a fiber,
@@ -25,3 +27,5 @@ earlier in the function, c is an obj of context. Then it calls set_context using
 to foo.
 
 ![T1 P2 code/running](t2prof.png)
+
+To compile and run this part of the code use clang++ main_p2.cpp context.o -o prog and then run it with ./prog
