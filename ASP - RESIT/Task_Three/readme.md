@@ -27,3 +27,5 @@ The following image shows this code running:
 ![Yield code fail](yield.png)
 
 Like with the previous task it gives a segmentaion fault.
+
+To compile this code use clang++ main.cpp context.o -o prog and to run use ./prog
