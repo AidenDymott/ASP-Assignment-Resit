@@ -5,10 +5,19 @@
 #include <cstring>
 #include <deque>
 
+//Ptr used by fibers, default value of null if no ptr passed through it.
+void* shared_data_ptr = nullptr;
+
+//Used to return shared ptr value.
+void* get_data(){
+        return shared_data_ptr;
+    }
+
 class Fiber {
 public:
 //Constructor.
-    Fiber(void (*func)()) : rip(func), rsp(nullptr) {}
+    Fiber(void (*func)(),void* data) : rip(func), rsp(nullptr), data_ptr(data) {}
+
 
     //Set up stack.
     void createContext() {
@@ -32,13 +41,13 @@ public:
     }
 
     void execute(){
-        //Allows rip to be used outside of fiber class
+        //Allows rip to be used outside of fiber class.
         rip();
     }
     
 // Deconstructor.
     ~Fiber(){
-        delete[] stack;
+ 
     }
 
 private:
@@ -46,6 +55,7 @@ private:
     void (*rip)();
     void* rsp;
     char* stack;
+    void* data_ptr;
 };
 
 class Scheduler {
@@ -54,7 +64,7 @@ public:
     void spawn(Fiber* f) {
         fibers_.push_back(f);
     }
-//Executes fibers
+//Executes fibers.
     void do_it() {
         context_ = getCurrentContext();
 
@@ -65,7 +75,7 @@ public:
             Context c = currentFiber->getContext();
             setContext(&c);
 
-            //Call the fiber function for execution
+            //Call the fiber function for execution.
             currentFiber->execute();
 
             delete currentFiber; //Delete fiber when done.
@@ -95,14 +105,24 @@ private:
 
 Scheduler s; //Global obj of the scheduler set to s.
 
-void foo() {
-    std::cout << "you called foo" << std::endl;
+void fiber1(){
+    int* dp = static_cast<int*>(get_data());//Create an int variable of dp(data ptr) and set it to the current value of the shared ptr. (Should be 10).
+    std::cout << "Fiber 1: "<< *dp << std::endl;
+    *dp = *dp + 1; //Increase value of data ptr by 1.
+}
+
+void fiber2(){
+    int* dp = static_cast<int*>(get_data());//Create an int variable of dp(data ptr) and set it to the current value of the shared ptr. (Should be 11).
+    std::cout << "Fiber 2: "<< *dp << std::endl;
 }
 
 int main() {
+    int d = 10; //Default data value.
+    shared_data_ptr = &d; //Set the vaule of the shared_data_ptr to the mem address of d.
+
     //Create new fiber objs.
-    Fiber* f1 = new Fiber(&foo);
-    Fiber* f2 = new Fiber(&foo);
+    Fiber* f1 = new Fiber(&fiber1, get_data());
+    Fiber* f2 = new Fiber(&fiber2, get_data());
 
     //Creates a context for new objs and sets stack pointer.
     f1->createContext();
@@ -114,8 +134,6 @@ int main() {
 
     //Executes fibers in order of how they were added to the que.
     s.do_it();
-
-    std::cout << "Back to main" << std::endl;
 
     return 0;
 }

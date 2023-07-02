@@ -1,5 +1,6 @@
 # Task Two
 
+
 ## Part One - Fiber
 
 The first step for setting up the fiber was to create the class fiber and set the public and private memebers, for this
@@ -11,6 +12,8 @@ for the ptrs by creating an obj of Context and assigning the values to them.
 Within the main function I create and obj of the Fiber class, this uses foo as its entry function, then call the creatContext() method with the f
 obj to initialise the fiber stack, then assigns the context of the fiber to the Context obj c and then finally switchs controll to the fiber
 using setContext.
+
+To compile and run this section of the program please use clang++ fiber_main.cpp context.o -o prog
 
 ![fiber creation](t2fiber.png)
 
@@ -36,4 +39,35 @@ are then added to the sceduler class, then when do_it() is called both of the fi
 Currently when the program runs it executes the first fiber correctly however when running the second fiber it returns a segmentaion fault, this is likely due to 
 the program not switching control correctly.
 
+To compile and run this section of the program please use clang++ scheduler_main.cpp context.o -o prog
+
 ![T2P2 Broken](t2_s.png)
+
+
+The next and final step of this task was to implement the get_data function which uses a shared_ptr to allow different fibers to share data between each other.
+The following code shows this being implemented.
+
+``` json
+{
+    //Ptr used by fibers, default value of null if no ptr passed through it.
+        void* shared_data_ptr = nullptr;
+
+        //Used to return shared ptr value.
+        void* get_data(){
+        return shared_data_ptr;
+    }
+
+}
+```
+Implementing this also meant an additional argument was required for the Fiber class to take in order for it to have access to the value stored within the shared
+ptr, as well as this 2 new functions were required, these are called fiber1 and fiber2 within the code, these get the data stored in the shared ptr and return it
+along with which fiber they are to check they both running and accessing the data stored within the shared_ptr. The final change to the code was to pass the get_data()
+function into the fiber obj creation within the main function, this sets the shared ptr to each fiber when running.
+
+The bellow image shows the code running:
+
+![Fiber Scheduler Final](scheduler_fail.png)
+
+As can be seen in the above the first fiber still executes without fault however when it comes to executing the second one it fails due to a segmentation fault (core dumped).
+A blog written by GeeksForGeeks [Segmentation Faults in C/C++](https://www.geeksforgeeks.org/segmentation-fault-c-cpp/) shows some of the most common issues for this fault
+and after reading I believe this error is occuring due to the memory address being freed after the first fibers execution.
